@@ -1,0 +1,96 @@
+/* ═══════════════════════════════════════
+   MaxGIS Theme System — Light & Dark
+   ═══════════════════════════════════════ */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ─── Dark Theme (default) ─── */
+[data-theme="dark"] {
+  --bg:          #1a1710;
+  --surface:     #23201a;
+  --surface2:    #2e2a22;
+  --surface3:    #3a342b;
+  --border:      rgba(194, 170, 130, 0.22);
+  --border-h:    rgba(194, 170, 130, 0.45);
+  --accent:      #c2aa82;
+  --accent2:     #a8925e;
+  --accent-bright: #ddc9a3;
+  --green:       #7ec88b;
+  --red:         #d97c6e;
+  --yellow:      #d4b96a;
+  --cyan:        #6ebad9;
+  --text:        #e8e0d4;
+  --text2:       #c8bfb0;
+  --dim:         #8a7f70;
+  --shadow:      rgba(0, 0, 0, 0.35);
+  --panel-alpha: 0.93;
+  --map-filter:  none;
+}
+
+/* ─── Light Theme ─── */
+[data-theme="light"] {
+  --bg:          #f5f0e8;
+  --surface:     #ffffff;
+  --surface2:    #f0ebe2;
+  --surface3:    #e6dfd4;
+  --border:      rgba(120, 100, 70, 0.2);
+  --border-h:    rgba(120, 100, 70, 0.4);
+  --accent:      #8b7355;
+  --accent2:     #6b5a42;
+  --accent-bright: #5c4a32;
+  --green:       #2d8a3e;
+  --red:         #c0392b;
+  --yellow:      #b8860b;
+  --cyan:        #2980b9;
+  --text:        #2c2416;
+  --text2:       #4a4030;
+  --dim:         #8a7f70;
+  --shadow:      rgba(0, 0, 0, 0.1);
+  --panel-alpha: 0.96;
+  --map-filter:  none;
+}
+
+/* ─── Shared variables ─── */
+:root {
+  --radius:  8px;
+  --panel-w: 340px;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+/* ─── Accent text helper ─── */
+.accent-text { color: var(--accent); }
+
+/* ─── Scrollbar styling ─── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+* { scrollbar-width: thin; scrollbar-color: var(--surface3) transparent; }
+
+/* ─── Leaflet overrides for theme ─── */
+.leaflet-control-scale-line {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--accent) !important;
+}
+.leaflet-bar a {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+.leaflet-bar a:hover { background: var(--surface2) !important; }
+
+/* ─── Theme transition ─── */
+body, .header, .sidebar, .footer, .info-box,
+.attr-panel, .dash-panel, .modal, .toast {
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+@media (max-width: 768px) {
+  :root { --panel-w: 290px; }
+}
