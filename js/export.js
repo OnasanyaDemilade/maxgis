@@ -36,7 +36,7 @@ $('btnExport').onclick = () => {
     </select>
 
     <label>Filename</label>
-    <input id="exportName" value="maxgis_export" placeholder="filename (no extension)">
+    <input id="exportName" value="spectraforte_export" placeholder="filename (no extension)">
 
     <div class="modal-foot">
       <button class="hbtn" onclick="closeModal()">Cancel</button>

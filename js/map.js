@@ -1,5 +1,6 @@
 /* ═══════════════════════════════════════
-   MaxGIS — Core Map & UI Controller
+   MaxGIS → Core Map & UI Controller
+   (Spectraforte — Maps. Data. Insight.)
    ═══════════════════════════════════════ */
 
 // ── Global State ──

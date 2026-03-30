@@ -3,209 +3,408 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MaxGIS — Geospatial Intelligence Platform</title>
+  <title>Spectraforte — Maps. Data. Insight.</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-  <!-- External Libraries -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+    :root {
+      --bg: #0a0f1a;
+      --surface: #111827;
+      --surface2: #1a2332;
+      --blue: #2196F3;
+      --blue-deep: #0D47A1;
+      --cyan: #4FC3F7;
+      --green: #4CAF50;
+      --green-light: #81C784;
+      --orange: #FF9800;
+      --text: #E0E0E0;
+      --dim: #78909C;
+      --glow-blue: rgba(33, 150, 243, 0.15);
+      --glow-green: rgba(76, 175, 80, 0.12);
+      --font: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
 
-  <!-- Our CSS -->
-  <link rel="stylesheet" href="css/theme.css"/>
-  <link rel="stylesheet" href="css/layout.css"/>
-  <link rel="stylesheet" href="css/components.css"/>
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(33, 150, 243, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(33, 150, 243, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .bg-glow {
+      position: fixed; z-index: 0;
+      width: 600px; height: 600px; border-radius: 50%;
+      filter: blur(120px); opacity: 0.4;
+      animation: float 12s ease-in-out infinite;
+    }
+    .bg-glow.g1 { top: -200px; left: -100px; background: rgba(33, 150, 243, 0.2); }
+    .bg-glow.g2 { bottom: -200px; right: -100px; background: rgba(76, 175, 80, 0.15); animation-delay: -6s; }
+    .bg-glow.g3 { top: 40%; left: 50%; background: rgba(79, 195, 247, 0.08); animation-delay: -3s; }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -20px) scale(1.05); }
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 64px; z-index: 100;
+      background: rgba(10, 15, 26, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(33, 150, 243, 0.1);
+      display: flex; align-items: center;
+      padding: 0 40px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 20px; color: var(--cyan);
+    }
+    .nav-logo img { width: 32px; height: 32px; object-fit: contain; }
+    .nav-links { margin-left: auto; display: flex; gap: 32px; align-items: center; }
+    .nav-links a {
+      color: var(--dim); text-decoration: none; font-size: 14px;
+      transition: color 0.2s; font-weight: 500;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      padding: 8px 20px;
+      background: linear-gradient(135deg, var(--green), #2E7D32);
+      color: #fff; border: none; border-radius: 8px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      text-decoration: none; transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    }
+    .nav-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    }
+
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 120px 20px 80px;
+    }
+    .hero-content { max-width: 800px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: 20px;
+      background: rgba(76, 175, 80, 0.1);
+      border: 1px solid rgba(76, 175, 80, 0.25);
+      font-size: 12px; color: var(--green-light);
+      margin-bottom: 24px; font-weight: 500;
+    }
+    .hero-badge .pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green); animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.5); }
+    }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800; line-height: 1.1;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #E0E0E0 0%, var(--cyan) 50%, var(--green) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 18px; color: var(--dim); line-height: 1.6;
+      max-width: 600px; margin: 0 auto 36px;
+    }
+    .hero-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+      color: #fff; border: none; border-radius: 10px;
+      font-size: 16px; font-weight: 600; cursor: pointer;
+      text-decoration: none; transition: all 0.25s;
+      box-shadow: 0 4px 20px rgba(33, 150, 243, 0.35);
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(33, 150, 243, 0.45);
+    }
+    .btn-primary svg { width: 18px; height: 18px; }
+    .btn-secondary {
+      padding: 14px 32px;
+      background: transparent;
+      border: 1px solid rgba(100, 181, 246, 0.3);
+      color: var(--text); border-radius: 10px;
+      font-size: 16px; font-weight: 500; cursor: pointer;
+      text-decoration: none; transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font);
+    }
+    .btn-secondary:hover {
+      border-color: var(--cyan);
+      background: var(--glow-blue);
+    }
+
+    .stats {
+      position: relative; z-index: 1;
+      display: flex; justify-content: center; gap: 60px;
+      padding: 40px 20px;
+      border-top: 1px solid rgba(33, 150, 243, 0.08);
+      border-bottom: 1px solid rgba(33, 150, 243, 0.08);
+    }
+    .stat { text-align: center; }
+    .stat .num {
+      font-size: 36px; font-weight: 800;
+      background: linear-gradient(135deg, var(--cyan), var(--green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat .label { font-size: 13px; color: var(--dim); margin-top: 4px; }
+
+    .features {
+      position: relative; z-index: 1;
+      padding: 100px 40px; max-width: 1200px; margin: 0 auto;
+    }
+    .features h2 {
+      text-align: center; font-size: 36px; font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .features .subtitle {
+      text-align: center; color: var(--dim); font-size: 16px;
+      margin-bottom: 60px; max-width: 500px; margin-left: auto; margin-right: auto;
+    }
+    .feature-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      padding: 28px;
+      background: rgba(17, 24, 39, 0.6);
+      border: 1px solid rgba(33, 150, 243, 0.1);
+      border-radius: 14px;
+      transition: all 0.25s;
+    }
+    .feature-card:hover {
+      border-color: rgba(33, 150, 243, 0.25);
+      background: rgba(17, 24, 39, 0.8);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px; font-size: 20px;
+    }
+    .fi-blue   { background: rgba(33, 150, 243, 0.12); color: var(--blue); }
+    .fi-green  { background: rgba(76, 175, 80, 0.12); color: var(--green); }
+    .fi-cyan   { background: rgba(79, 195, 247, 0.12); color: var(--cyan); }
+    .fi-orange { background: rgba(255, 152, 0, 0.12); color: var(--orange); }
+    .feature-card h3 {
+      font-size: 16px; font-weight: 600; margin-bottom: 8px; color: #fff;
+    }
+    .feature-card p { font-size: 13px; color: var(--dim); line-height: 1.5; }
+
+    .workflow {
+      position: relative; z-index: 1;
+      padding: 80px 40px; text-align: center;
+      background: linear-gradient(180deg, transparent, rgba(33, 150, 243, 0.03), transparent);
+    }
+    .workflow h2 { font-size: 32px; font-weight: 700; margin-bottom: 50px; }
+    .wf-steps {
+      display: flex; justify-content: center; gap: 24px;
+      flex-wrap: wrap; max-width: 900px; margin: 0 auto;
+    }
+    .wf-step {
+      flex: 1; min-width: 180px; max-width: 200px;
+      padding: 24px 16px;
+      background: var(--surface);
+      border: 1px solid rgba(33, 150, 243, 0.1);
+      border-radius: 12px;
+    }
+    .wf-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+      color: #fff; font-size: 14px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px;
+    }
+    .wf-step h4 { font-size: 14px; margin-bottom: 6px; color: #fff; }
+    .wf-step p { font-size: 12px; color: var(--dim); line-height: 1.4; }
+    .wf-arrow { color: var(--dim); font-size: 24px; align-self: center; flex-shrink: 0; }
+
+    .cta-section {
+      position: relative; z-index: 1;
+      padding: 100px 40px; text-align: center;
+    }
+    .cta-box {
+      max-width: 600px; margin: 0 auto;
+      padding: 48px; border-radius: 20px;
+      background: linear-gradient(135deg, rgba(33, 150, 243, 0.08), rgba(76, 175, 80, 0.06));
+      border: 1px solid rgba(33, 150, 243, 0.15);
+    }
+    .cta-box h2 { font-size: 28px; margin-bottom: 12px; }
+    .cta-box p { color: var(--dim); margin-bottom: 28px; font-size: 15px; }
+
+    .landing-footer {
+      position: relative; z-index: 1;
+      padding: 40px;
+      border-top: 1px solid rgba(33, 150, 243, 0.08);
+      text-align: center; color: var(--dim); font-size: 13px;
+    }
+    .landing-footer a { color: var(--cyan); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .stats { gap: 30px; flex-wrap: wrap; }
+      .features, .workflow, .cta-section { padding-left: 20px; padding-right: 20px; }
+      .wf-arrow { display: none; }
+    }
+  </style>
 </head>
-<body data-theme="dark">
+<body>
 
-  <!-- ═══════ HEADER ═══════ -->
-  <header class="header">
-    <div class="logo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z"/></svg>
-      MaxGIS
-      <span class="logo-sub">Geospatial Intelligence Platform</span>
+  <div class="bg-grid"></div>
+  <div class="bg-glow g1"></div>
+  <div class="bg-glow g2"></div>
+  <div class="bg-glow g3"></div>
+
+  <nav>
+    <div class="nav-logo">
+      <img src="assets/logo.png" alt="Spectraforte Logo">
+      Spectraforte
     </div>
-    <div class="header-spacer"></div>
-
-    <button class="hbtn on" id="btnPanel">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg> Panel
-    </button>
-    <button class="hbtn" id="btnSearch">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Search
-    </button>
-    <div class="sep"></div>
-    <button class="hbtn" id="btnMeasure">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 2l20 20M9 2v5M2 9h5M15 22v-5M22 15h-5"/></svg> Measure
-    </button>
-    <button class="hbtn" id="btnAttr">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg> Table
-    </button>
-    <button class="hbtn" id="btnDash">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> Dashboard
-    </button>
-    <div class="sep"></div>
-    <button class="hbtn" id="btnExport">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export
-    </button>
-    <button class="hbtn" id="btnShare">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Share
-    </button>
-    <button class="hbtn" id="btnTheme" title="Toggle light/dark">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-    </button>
-    <button class="hbtn" id="btnFS">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
-    </button>
-  </header>
-
-  <!-- ═══════ SIDEBAR ═══════ -->
-  <nav class="sidebar" id="sidebar">
-
-    <!-- Import Section -->
-    <div class="sec">
-      <div class="sec-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Import Data
-      </div>
-      <div class="drop-zone" id="dropZone">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <div>Drop <b>GeoJSON · KML · GPX · CSV · SHP(zip)</b></div>
-        <div style="font-size:10px;margin-top:3px" class="accent-text">or click to browse</div>
-      </div>
-      <input type="file" id="fileIn" accept=".geojson,.json,.kml,.gpx,.csv,.zip" multiple hidden>
-      <div class="url-row">
-        <input type="text" id="urlIn" placeholder="GeoJSON URL or GitHub raw link…">
-        <button class="sm-btn" id="btnLoadUrl">Load</button>
-      </div>
-      <div style="display:flex;gap:5px;margin-top:5px">
-        <button class="sm-btn" style="flex:1" id="btnWMS">+ WMS Layer</button>
-        <button class="sm-btn" style="flex:1" id="btnGH">+ GitHub Repo</button>
-      </div>
-      <div style="display:flex;gap:5px;margin-top:5px">
-        <button class="sm-btn" style="flex:1" id="btnGDrive">+ Google Drive</button>
-        <button class="sm-btn" style="flex:1" id="btnGEE">+ GEE Analysis</button>
-      </div>
-    </div>
-
-    <!-- Layers Section -->
-    <div class="sec">
-      <div class="sec-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-        Layers <span class="badge" id="lyrCount">0</span>
-      </div>
-      <div id="lyrList"><div class="empty-msg">No layers loaded yet.<br>Import data above to begin.</div></div>
-    </div>
-
-    <!-- Basemaps Section -->
-    <div class="sec">
-      <div class="sec-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
-        Basemaps
-      </div>
-      <div class="bm-grid" id="bmGrid"></div>
-    </div>
-
-    <!-- Tools Section -->
-    <div class="sec">
-      <div class="sec-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-        Tools
-      </div>
-      <div class="tools-grid" id="toolsGrid">
-        <!-- Populated by tools.js -->
-      </div>
-    </div>
-
-    <!-- Style Section -->
-    <div class="sec">
-      <div class="sec-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        Layer Style
-      </div>
-      <select id="styleSel" class="form-select"><option value="">Select layer…</option></select>
-      <div class="style-row">
-        <div><label>Fill</label><input type="color" id="sFill" value="#c2aa82"></div>
-        <div><label>Stroke</label><input type="color" id="sStroke" value="#8a7f70"></div>
-        <div><label>Opacity <span id="sOpVal">0.5</span></label><input type="range" id="sOp" min="0" max="1" step="0.05" value="0.5"></div>
-        <div><label>Weight <span id="sWtVal">2</span></label><input type="range" id="sWt" min="1" max="10" step="0.5" value="2"></div>
-      </div>
-      <div style="margin-top:6px">
-        <label class="form-label">Classify by (choropleth)</label>
-        <select id="classField" class="form-select"><option value="">-- none --</option></select>
-      </div>
-      <div style="display:flex;gap:5px;margin-top:8px">
-        <button class="sm-btn" style="flex:1" id="btnApplyStyle">Apply Style</button>
-        <button class="sm-btn" style="flex:1" id="btnClassify">Classify</button>
-      </div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#workflow">Workflow</a>
+      <a href="https://github.com/OnasanyaDemilade/maxgis" target="_blank">GitHub</a>
+      <a href="app.html" class="nav-cta">Launch App →</a>
     </div>
   </nav>
 
-  <!-- ═══════ SEARCH ═══════ -->
-  <div class="search-wrap" id="searchWrap">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="searchIn" placeholder="Search for a location…" autocomplete="off">
-    <div class="sr-list" id="srList"></div>
-  </div>
-
-  <!-- ═══════ INFO BOX ═══════ -->
-  <div class="info-box shifted" id="infoBox">
-    <span id="coords">0.00000, 0.00000</span> &nbsp;|&nbsp; Z<span id="zLvl">6</span>
-  </div>
-
-  <!-- ═══════ ATTRIBUTE TABLE ═══════ -->
-  <div class="attr-panel" id="attrPanel">
-    <div class="attr-header">
-      <span id="attrTitle">Attribute Table</span>
-      <select id="attrSel" class="form-select-sm"><option value="">Select layer…</option></select>
-      <button class="lbtn" id="btnCloseAttr" title="Close">✕</button>
-    </div>
-    <div class="attr-body" id="attrBody"></div>
-  </div>
-
-  <!-- ═══════ DASHBOARD PANEL ═══════ -->
-  <div class="dash-panel" id="dashPanel">
-    <div class="dash-header">
-      <span>Data Dashboard</span>
-      <div style="display:flex;gap:6px;align-items:center">
-        <select id="dashLayerSel" class="form-select-sm"><option value="">Select CSV layer…</option></select>
-        <button class="lbtn" id="btnCloseDash" title="Close">✕</button>
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <div class="pulse"></div>
+        Open Source Geospatial Platform
+      </div>
+      <h1>Maps. Data. Insight.</h1>
+      <p>Upload, visualise, analyse, and share spatial data from your browser. Powered by Leaflet, Chart.js, and Google Earth Engine integration.</p>
+      <div class="hero-buttons">
+        <a href="app.html" class="btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Launch Spectraforte
+        </a>
+        <a href="https://github.com/OnasanyaDemilade/maxgis" target="_blank" class="btn-secondary">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          View on GitHub
+        </a>
       </div>
     </div>
-    <div class="dash-body" id="dashBody">
-      <div class="empty-msg">Load a CSV to visualise data here</div>
+  </section>
+
+  <section class="stats">
+    <div class="stat"><div class="num">9+</div><div class="label">Basemap Layers</div></div>
+    <div class="stat"><div class="num">5</div><div class="label">Export Formats</div></div>
+    <div class="stat"><div class="num">10+</div><div class="label">Analysis Tools</div></div>
+    <div class="stat"><div class="num">∞</div><div class="label">Data Sources</div></div>
+  </section>
+
+  <section class="features" id="features">
+    <h2>Everything You Need</h2>
+    <p class="subtitle">A complete geospatial toolkit in your browser — no installation, no subscriptions</p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon fi-blue">🗺️</div>
+        <h3>Multi-Format Import</h3>
+        <p>Drag & drop GeoJSON, KML, GPX, CSV files or load from URLs, GitHub repos, and Google Drive.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-green">📤</div>
+        <h3>Universal Export</h3>
+        <p>Convert between GeoJSON, KML, GPX, and CSV. Export individual layers or everything at once.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-cyan">🛰️</div>
+        <h3>Earth Engine Analysis</h3>
+        <p>LULC classification, NDVI, flood vulnerability, urban expansion — powered by Google Earth Engine.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-orange">📊</div>
+        <h3>Data Dashboard</h3>
+        <p>Auto-generated pie charts, bar graphs, histograms, and scatter plots from your attribute data.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-blue">🎨</div>
+        <h3>Layer Styling & Choropleth</h3>
+        <p>Custom colours, opacity, and weight. Classify numeric fields with graduated colour ramps.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-green">🔗</div>
+        <h3>Live Sharing</h3>
+        <p>Generate shareable links with map state and data. Embed interactive maps on any website.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-cyan">🛠️</div>
+        <h3>Spatial Tools</h3>
+        <p>Draw, measure, buffer analysis, centroid extraction, bounding box, and WMS layer support.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-orange">☁️</div>
+        <h3>Cloud Storage</h3>
+        <p>Save layers to the cloud and access from anywhere. No account needed — completely free.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-green">🌙</div>
+        <h3>Light & Dark Themes</h3>
+        <p>Professional dark mode for map analysis. Clean light mode for presentations. Switch anytime.</p>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ═══════ EXPORT MODAL ═══════ -->
-  <!-- ═══════ TOAST ═══════ -->
-  <div class="toast" id="toast"></div>
-  <!-- ═══════ MODAL ═══════ -->
-  <div class="modal-bg" id="modalBg"><div class="modal" id="modalBox"></div></div>
+  <section class="workflow" id="workflow">
+    <h2>QGIS → Web in 3 Steps</h2>
+    <div class="wf-steps">
+      <div class="wf-step">
+        <div class="wf-num">1</div>
+        <h4>Style in QGIS</h4>
+        <p>Prepare and style your layers, then export as GeoJSON</p>
+      </div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">
+        <div class="wf-num">2</div>
+        <h4>Push to GitHub</h4>
+        <p>Save to your data/ folder and git push — auto-deploys</p>
+      </div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">
+        <div class="wf-num">3</div>
+        <h4>View & Share</h4>
+        <p>Open Spectraforte, load your repo, analyse and share with anyone</p>
+      </div>
+    </div>
+  </section>
 
-  <!-- ═══════ MAP ═══════ -->
-  <div id="map"></div>
+  <section class="cta-section">
+    <div class="cta-box">
+      <h2>Ready to Map?</h2>
+      <p>Start visualising your geospatial data in seconds — no setup required.</p>
+      <a href="app.html" class="btn-primary" style="font-size:18px;padding:16px 40px">
+        Open Spectraforte →
+      </a>
+    </div>
+  </section>
 
-  <!-- ═══════ FOOTER ═══════ -->
-  <footer class="footer">
-    <div class="status-dot"></div> MaxGIS Ready
-    <span>EPSG:4326</span>
-    <span id="ftCount">Features: 0</span>
-    <span style="margin-left:auto" id="statusMsg"></span>
+  <footer class="landing-footer">
+    <p>Built by <strong>Onasanya Demilade</strong> · <a href="https://github.com/OnasanyaDemilade/maxgis">GitHub</a> · MIT License</p>
+    <p style="margin-top:6px;font-size:11px">Spectraforte — Maps. Data. Insight.</p>
   </footer>
 
-  <!-- External JS Libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-
-  <!-- Our JS Modules -->
-  <script src="js/map.js"></script>
-  <script src="js/converters.js"></script>
-  <script src="js/layers.js"></script>
-  <script src="js/tools.js"></script>
-  <script src="js/export.js"></script>
-  <script src="js/dashboard.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/gee.js"></script>
-  <script src="js/sharing.js"></script>
 </body>
 </html>

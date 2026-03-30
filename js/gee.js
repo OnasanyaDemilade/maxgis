@@ -163,7 +163,7 @@ function generateGEEScript() {
   if (!aoi) return;
 
   const aoiStr = JSON.stringify(aoi.coordinates);
-  let script = `# MaxGIS Earth Engine Analysis Script\n`;
+  let script = `# Spectraforte Earth Engine Analysis Script\n`;
   script += `# Run this in Google Colab with: pip install earthengine-api\n\n`;
   script += `import ee\nee.Authenticate()\nee.Initialize(project='your-project-id')\n\n`;
   script += `aoi = ee.Geometry.Polygon(${aoiStr})\n\n`;
@@ -218,7 +218,7 @@ function generateGEEScript() {
       break;
   }
 
-  script += `\n# To export results as GeoJSON for MaxGIS:\n`;
+  script += `\n# To export results as GeoJSON for Spectraforte:\n`;
   script += `# Save to Drive, download, then import into MaxGIS\n`;
 
   // Download the script
