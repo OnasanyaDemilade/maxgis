@@ -1,8 +1,8 @@
-# 🌍 MaxGIS — Geospatial Intelligence Platform
+# 🌍 Spectraforte — Maps. Data. Insight.
 
-**MaxGIS** is a powerful, browser-based geospatial web application for uploading, visualising, analysing, and sharing spatial data from anywhere on the web. Built with Leaflet.js, it integrates with QGIS, Google Earth Engine, and cloud storage for a complete GIS workflow.
+**Spectraforte** is a powerful, browser-based geospatial web application for uploading, visualising, analysing, and sharing spatial data from anywhere on the web. Built with Leaflet.js, it integrates with QGIS, Google Earth Engine, and cloud storage for a complete GIS workflow.
 
-🔗 **Live Site:** [https://your-username.github.io/maxgis/](https://your-username.github.io/maxgis/)
+🔗 **Live Site:** [https://OnasanyaDemilade.github.io/maxgis/](https://OnasanyaDemilade.github.io/maxgis/)
 
 ---
 
@@ -70,10 +70,13 @@
 
 ```
 maxgis/
-├── index.html          # Entry point — loads all CSS & JS
+├── index.html          # Landing page
+├── app.html            # Main map application
 ├── netlify.toml        # Netlify deployment config
 ├── README.md
 ├── .gitignore
+├── assets/
+│   └── logo.png        # Spectraforte logo
 ├── css/
 │   ├── theme.css       # Light/dark theme variables
 │   ├── layout.css      # Structural positioning
@@ -156,3 +159,5 @@ MIT License — free for personal and commercial use.
 **Onasanya Demilade**
 
 Built with ❤️ for the geospatial community.
+
+*Spectraforte — Maps. Data. Insight.*
