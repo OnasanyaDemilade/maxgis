@@ -1,10 +1,11 @@
-/* ═══════════════════════════════════════
-   Spectraforte Theme — Blue/Cyan/Green
-   ═══════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   SPECTRAFORTE THEME
+   Dark: #121212 bg, Green primary, Blue secondary
+   Light: #E3F2FD bg, Deep blue primary, Cyan accent
+   ═══════════════════════════════════════════════ */
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ─── DARK THEME (default) ─── */
 [data-theme="dark"] {
   --bg:            #121212;
   --surface:       #1E1E1E;
@@ -12,13 +13,15 @@
   --surface3:      #2D2D2D;
   --border:        rgba(100, 181, 246, 0.18);
   --border-h:      rgba(100, 181, 246, 0.4);
+  --primary:       #4CAF50;
+  --secondary:     #2196F3;
   --accent:        #64B5F6;
   --accent2:       #2196F3;
   --accent-bright: #90CAF9;
   --green:         #4CAF50;
   --green-light:   #81C784;
   --red:           #EF5350;
-  --yellow:        #FF9800;
+  --yellow:        #FFC107;
   --cyan:          #4FC3F7;
   --orange:        #FF9800;
   --text:          #E0E0E0;
@@ -27,9 +30,9 @@
   --shadow:        rgba(0, 0, 0, 0.5);
   --panel-alpha:   0.94;
   --glow:          rgba(79, 195, 247, 0.08);
+  --panel-bg:      rgba(18, 18, 18, 0.94);
 }
 
-/* ─── LIGHT THEME ─── */
 [data-theme="light"] {
   --bg:            #E3F2FD;
   --surface:       #FFFFFF;
@@ -37,6 +40,8 @@
   --surface3:      #D6E8F7;
   --border:        rgba(13, 71, 161, 0.15);
   --border-h:      rgba(13, 71, 161, 0.3);
+  --primary:       #0D47A1;
+  --secondary:     #1976D2;
   --accent:        #1976D2;
   --accent2:       #0D47A1;
   --accent-bright: #0D47A1;
@@ -44,7 +49,7 @@
   --green-light:   #4CAF50;
   --red:           #D32F2F;
   --yellow:        #F57F17;
-  --cyan:          #0288D1;
+  --cyan:          #4FC3F7;
   --orange:        #E65100;
   --text:          #1A2634;
   --text2:         #37474F;
@@ -52,6 +57,7 @@
   --shadow:        rgba(13, 71, 161, 0.1);
   --panel-alpha:   0.97;
   --glow:          rgba(25, 118, 210, 0.06);
+  --panel-bg:      rgba(255, 255, 255, 0.97);
 }
 
 :root {
@@ -69,10 +75,6 @@ html, body {
   overflow: hidden;
 }
 
-.accent-text { color: var(--accent); }
-.green-text  { color: var(--green); }
-.cyan-text   { color: var(--cyan); }
-
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
 * { scrollbar-width: thin; scrollbar-color: var(--surface3) transparent; }
@@ -80,7 +82,7 @@ html, body {
 .leaflet-control-scale-line {
   background: var(--surface) !important;
   color: var(--text) !important;
-  border-color: var(--accent) !important;
+  border-color: var(--green) !important;
 }
 .leaflet-bar a {
   background: var(--surface) !important;
@@ -89,14 +91,12 @@ html, body {
 }
 .leaflet-bar a:hover {
   background: var(--surface2) !important;
-  color: var(--accent) !important;
+  color: var(--green) !important;
 }
 
 body, .header, .sidebar, .footer, .info-box,
 .attr-panel, .dash-panel, .modal, .toast {
-  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
 }
 
-@media (max-width: 768px) {
-  :root { --panel-w: 290px; }
-}
+@media (max-width: 768px) { :root { --panel-w: 290px; } }

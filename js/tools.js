@@ -9,6 +9,7 @@ const TOOLS = [
   { id: 'polygon',   icon: '<polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5"/>', label: 'Polygon' },
   { id: 'circle',    icon: '<circle cx="12" cy="12" r="10"/>', label: 'Circle' },
   { id: 'rectangle', icon: '<rect x="3" y="3" width="18" height="18" rx="2"/>', label: 'Rectangle' },
+  { id: 'createLayer', icon: '<path d="M12 5v14M5 12h14"/><rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="4 2"/>', label: 'Save as Layer' },
   { id: 'buffer',    icon: '<circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/>', label: 'Buffer' },
   { id: 'centroid',  icon: '<circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="6"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/>', label: 'Centroid' },
   { id: 'bbox',      icon: '<rect x="4" y="4" width="16" height="16" rx="1" stroke-dasharray="4 3"/><circle cx="4" cy="4" r="1.5" fill="currentColor"/><circle cx="20" cy="4" r="1.5" fill="currentColor"/><circle cx="4" cy="20" r="1.5" fill="currentColor"/><circle cx="20" cy="20" r="1.5" fill="currentColor"/>', label: 'BBox' },
@@ -24,17 +25,13 @@ $('toolsGrid').innerHTML = TOOLS.map(t => `
 
 function handleTool(id) {
   switch (id) {
-    case 'marker':
-    case 'polyline':
-    case 'polygon':
-    case 'circle':
-    case 'rectangle':
-      drawTool(id);
-      break;
-    case 'buffer':   runBuffer(); break;
-    case 'centroid':  runCentroid(); break;
-    case 'bbox':      runBBox(); break;
-    case 'clear':     clearAll(); break;
+    case 'marker': case 'polyline': case 'polygon': case 'circle': case 'rectangle':
+      drawTool(id); break;
+    case 'createLayer': createLayerFromDrawn(); break;
+    case 'buffer':      runBuffer(); break;
+    case 'centroid':    runCentroid(); break;
+    case 'bbox':        runBBox(); break;
+    case 'clear':       clearAll(); break;
   }
 }
 
