@@ -1,11 +1,10 @@
 /* ═══════════════════════════════════════
-   MaxGIS Theme — Blue/Cyan Geospatial
-   Remote Sensing / Tech Aesthetic
+   Spectraforte Theme — Blue/Cyan/Green
    ═══════════════════════════════════════ */
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ─── Dark Theme (default — pro geoportal look) ─── */
+/* ─── DARK THEME (default) ─── */
 [data-theme="dark"] {
   --bg:            #121212;
   --surface:       #1E1E1E;
@@ -30,7 +29,7 @@
   --glow:          rgba(79, 195, 247, 0.08);
 }
 
-/* ─── Light Theme (Blue + Cyan analytical) ─── */
+/* ─── LIGHT THEME ─── */
 [data-theme="light"] {
   --bg:            #E3F2FD;
   --surface:       #FFFFFF;
@@ -55,7 +54,6 @@
   --glow:          rgba(25, 118, 210, 0.06);
 }
 
-/* ─── Shared Variables ─── */
 :root {
   --radius: 8px;
   --panel-w: 340px;
@@ -71,19 +69,14 @@ html, body {
   overflow: hidden;
 }
 
-/* ─── Accent Helpers ─── */
-.accent-text  { color: var(--accent); }
-.green-text   { color: var(--green); }
-.cyan-text    { color: var(--cyan); }
-.orange-text  { color: var(--orange); }
+.accent-text { color: var(--accent); }
+.green-text  { color: var(--green); }
+.cyan-text   { color: var(--cyan); }
 
-/* ─── Scrollbar ─── */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 * { scrollbar-width: thin; scrollbar-color: var(--surface3) transparent; }
 
-/* ─── Leaflet Overrides ─── */
 .leaflet-control-scale-line {
   background: var(--surface) !important;
   color: var(--text) !important;
@@ -99,10 +92,8 @@ html, body {
   color: var(--accent) !important;
 }
 
-/* ─── Smooth Theme Transitions ─── */
 body, .header, .sidebar, .footer, .info-box,
-.attr-panel, .dash-panel, .modal, .toast,
-.hbtn, .sm-btn, .tool, .bm-card, .layer-item {
+.attr-panel, .dash-panel, .modal, .toast {
   transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 

@@ -14,7 +14,8 @@ const APP = {
   uid: 0,
   attrOpen: false,
   dashOpen: false,
-  theme: localStorage.getItem('maxgis-theme') || 'dark'
+  theme: localStorage.getItem('spectraforte-theme') || 'dark',
+  crs: 'EPSG:4326'
 };
 
 // Shorthand
@@ -82,11 +83,40 @@ function switchBasemap(name) {
 
 // ── Map Events ──
 map.on('mousemove', (e) => {
-  $('coords').textContent = `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+  const lat = e.latlng.lat;
+  const lng = e.latlng.lng;
+  if (APP.crs === 'EPSG:4326') {
+    $('coords').textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  } else if (APP.crs === 'EPSG:3857') {
+    const x = lng * 20037508.34 / 180;
+    let y = Math.log(Math.tan((90 + lat) * Math.PI / 360)) / (Math.PI / 180);
+    y = y * 20037508.34 / 180;
+    $('coords').textContent = `${x.toFixed(1)} m, ${y.toFixed(1)} m`;
+  } else if (APP.crs === 'DMS') {
+    $('coords').textContent = `${toDMS(lat, 'lat')} ${toDMS(lng, 'lng')}`;
+  }
 });
 map.on('zoomend', () => {
   $('zLvl').textContent = map.getZoom();
 });
+
+// ── CRS Toggle ──
+function toggleCRS() {
+  const systems = ['EPSG:4326', 'EPSG:3857', 'DMS'];
+  const idx = systems.indexOf(APP.crs);
+  APP.crs = systems[(idx + 1) % systems.length];
+  $('crsDisplay').textContent = APP.crs;
+  toast('Coordinates: ' + APP.crs, 'ok');
+}
+
+function toDMS(dd, type) {
+  const dir = type === 'lat' ? (dd >= 0 ? 'N' : 'S') : (dd >= 0 ? 'E' : 'W');
+  const abs = Math.abs(dd);
+  const d = Math.floor(abs);
+  const m = Math.floor((abs - d) * 60);
+  const s = ((abs - d - m / 60) * 3600).toFixed(1);
+  return `${d}°${m}'${s}"${dir}`;
+}
 
 // ── Panel Toggle ──
 $('btnPanel').onclick = () => {
@@ -100,7 +130,7 @@ $('btnPanel').onclick = () => {
 $('btnTheme').onclick = () => {
   APP.theme = APP.theme === 'dark' ? 'light' : 'dark';
   document.body.setAttribute('data-theme', APP.theme);
-  localStorage.setItem('maxgis-theme', APP.theme);
+  localStorage.setItem('spectraforte-theme', APP.theme);
   toast(`${APP.theme.charAt(0).toUpperCase() + APP.theme.slice(1)} mode`, 'ok');
 };
 
