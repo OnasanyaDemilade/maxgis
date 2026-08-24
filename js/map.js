@@ -98,6 +98,7 @@ map.on('mousemove', (e) => {
 });
 map.on('zoomend', () => {
   $('zLvl').textContent = map.getZoom();
+  if ($('summaryZoom')) $('summaryZoom').textContent = map.getZoom();
 });
 
 // ── CRS Toggle ──
@@ -117,6 +118,19 @@ function toDMS(dd, type) {
   const s = ((abs - d - m / 60) * 3600).toFixed(1);
   return `${d}°${m}'${s}"${dir}`;
 }
+
+// ── Right Workspace Dock ──
+function setDock(open) {
+  const dock = $('rightDock');
+  if (!dock) return;
+  dock.classList.toggle('hide', !open);
+  $('btnDock')?.classList.toggle('on', open);
+}
+$('btnDock')?.addEventListener('click', () => {
+  const dock = $('rightDock');
+  setDock(dock?.classList.contains('hide'));
+});
+$('btnCloseDock')?.addEventListener('click', () => setDock(false));
 
 // ── Panel Toggle ──
 $('btnPanel').onclick = () => {

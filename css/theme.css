@@ -100,3 +100,7 @@ body, .header, .sidebar, .footer, .info-box,
 }
 
 @media (max-width: 768px) { :root { --panel-w: 290px; } }
+
+/* V2 workspace polish */
+button, input, select { font-family: inherit; }
+::selection { background: rgba(79,195,247,.22); color: var(--text); }

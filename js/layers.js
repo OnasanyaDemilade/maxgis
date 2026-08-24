@@ -119,6 +119,8 @@ function addLayer(data, name, customStyle) {
 function refreshLayers() {
   $('lyrCount').textContent = APP.layers.length;
   $('ftCount').textContent = 'Features: ' + APP.totalFt;
+  if ($('summaryLayers')) $('summaryLayers').textContent = APP.layers.length;
+  if ($('summaryFeatures')) $('summaryFeatures').textContent = APP.totalFt;
   const el = $('lyrList');
   if (!APP.layers.length) { el.innerHTML = '<div class="empty-msg">No layers loaded.<br>Import data to begin.</div>'; refreshSelects(); return; }
 

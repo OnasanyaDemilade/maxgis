@@ -181,3 +181,276 @@
   .dash-panel { width: 100%; transform: translateX(100%); }
   .logo-sub { display: none; }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SPECTRAFORTE V2 — PROFESSIONAL GIS WORKSPACE
+   Three-zone desktop layout: project/layers | map | controls
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --topbar-h: 52px;
+  --status-h: 28px;
+  --left-w: 310px;
+  --right-w: 330px;
+  --dock-gap: 10px;
+}
+
+body { background: var(--bg); }
+
+/* Top application bar */
+.header {
+  height: var(--topbar-h);
+  padding: 0 12px;
+  gap: 6px;
+  background: color-mix(in srgb, var(--panel-bg) 96%, transparent);
+  box-shadow: 0 1px 0 var(--border), 0 8px 24px rgba(0,0,0,.12);
+}
+.logo {
+  min-width: 205px;
+  font-size: 15px;
+  letter-spacing: -.15px;
+}
+.logo-sub { font-size: 9px; }
+
+/* Map is the actual canvas; docks float above it */
+#map {
+  position: fixed;
+  inset: var(--topbar-h) 0 var(--status-h) 0;
+  z-index: 1;
+}
+.leaflet-top { z-index: 900; }
+.leaflet-control-zoom {
+  margin-top: 12px !important;
+  margin-right: 12px !important;
+}
+.leaflet-control-attribution {
+  margin-bottom: 4px !important;
+}
+
+/* Left project/layer dock */
+.sidebar {
+  top: calc(var(--topbar-h) + var(--dock-gap));
+  left: var(--dock-gap);
+  bottom: calc(var(--status-h) + var(--dock-gap));
+  width: var(--left-w);
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow-y: auto;
+  box-shadow: 0 14px 45px var(--shadow);
+  background: color-mix(in srgb, var(--panel-bg) 96%, transparent);
+}
+.sidebar.hide {
+  transform: translateX(calc(-1 * (var(--left-w) + 20px)));
+}
+.sidebar .sec:first-of-type { padding-top: 10px; }
+
+.dock-head {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--glow), transparent);
+}
+.dock-kicker {
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: var(--dim);
+  font-weight: 700;
+}
+.dock-title {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+.dock-live {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--green-light);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .6px;
+}
+.dock-live i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+}
+
+/* Right controls dock */
+.right-dock {
+  position: fixed;
+  top: calc(var(--topbar-h) + var(--dock-gap));
+  right: var(--dock-gap);
+  bottom: calc(var(--status-h) + var(--dock-gap));
+  width: var(--right-w);
+  z-index: 998;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--panel-bg) 96%, transparent);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 14px 45px var(--shadow);
+  transition: transform .25s cubic-bezier(.4,0,.2,1), opacity .2s;
+}
+.right-dock.hide {
+  transform: translateX(calc(var(--right-w) + 20px));
+  opacity: 0;
+  pointer-events: none;
+}
+.right-dock .sec {
+  padding: 11px 12px;
+}
+.right-dock .sec-title {
+  margin-bottom: 8px;
+}
+.right-dock .bm-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Floating coordinate readout */
+.info-box {
+  left: calc(var(--left-w) + 22px);
+  bottom: calc(var(--status-h) + 12px);
+  padding: 6px 10px;
+  border-radius: 7px;
+  box-shadow: 0 6px 22px var(--shadow);
+}
+.info-box.shifted { left: calc(var(--left-w) + 22px); }
+
+/* Status bar */
+.footer {
+  height: var(--status-h);
+  font-size: 10px;
+  padding: 0 12px;
+  gap: 12px;
+  box-shadow: 0 -1px 0 var(--border);
+}
+
+/* Summary cards */
+.map-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+.map-summary > div {
+  min-width: 0;
+  padding: 8px 5px;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+}
+.map-summary strong {
+  display: block;
+  color: var(--accent-bright);
+  font-size: 14px;
+  line-height: 1.1;
+}
+.map-summary span {
+  display: block;
+  margin-top: 3px;
+  color: var(--dim);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.sec-compact { padding-bottom: 12px !important; }
+
+/* Give the layer list a stronger GIS hierarchy */
+.layer-item {
+  min-height: 34px;
+  padding: 6px 7px;
+  border: 1px solid transparent;
+}
+.layer-item:hover {
+  border-color: var(--border);
+}
+.layer-item:has(input:checked) {
+  background: color-mix(in srgb, var(--glow) 70%, transparent);
+}
+.lname { font-weight: 500; }
+
+/* Better spacing for the dense right dock */
+.right-dock .tools-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+.right-dock .tool {
+  min-height: 62px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.right-dock .style-row {
+  gap: 8px;
+}
+
+/* Search stays above docks */
+.search-wrap { top: calc(var(--topbar-h) + 12px); z-index: 1002; }
+
+/* Attribute table becomes a bottom GIS console */
+.attr-panel {
+  left: calc(var(--left-w) + 10px);
+  right: calc(var(--right-w) + 10px);
+  bottom: calc(var(--status-h) + 8px);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 14px 40px var(--shadow);
+}
+.attr-panel.open { height: 290px; }
+
+/* Dashboard remains a dedicated overlay, above the right dock */
+.dash-panel {
+  top: calc(var(--topbar-h) + var(--dock-gap));
+  right: var(--dock-gap);
+  height: calc(100vh - var(--topbar-h) - var(--status-h) - (2 * var(--dock-gap)));
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 14px 45px var(--shadow);
+}
+
+/* Keep mobile usable: collapse the right dock below the map */
+@media (max-width: 1100px) {
+  :root { --left-w: 285px; --right-w: 290px; }
+  .header .hbtn { padding: 0 8px; }
+  .header .hbtn:not(#btnPanel):not(#btnMeasure):not(#btnDock):not(#btnTheme):not(#btnFS) {
+    font-size: 0;
+    gap: 0;
+  }
+  .header .hbtn:not(#btnPanel):not(#btnMeasure):not(#btnDock):not(#btnTheme):not(#btnFS) svg {
+    margin: 0;
+  }
+}
+
+@media (max-width: 820px) {
+  :root { --left-w: min(88vw, 310px); --right-w: min(88vw, 310px); }
+  .right-dock {
+    top: calc(var(--topbar-h) + var(--dock-gap));
+    right: var(--dock-gap);
+    bottom: auto;
+    height: min(70vh, 620px);
+  }
+  .info-box {
+    left: 12px !important;
+    bottom: calc(var(--status-h) + 12px);
+  }
+  .attr-panel {
+    left: 8px;
+    right: 8px;
+  }
+  .logo { min-width: auto; }
+  .logo-sub { display: none; }
+  #btnDash, #btnExport, #btnShare { display: none; }
+}
